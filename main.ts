@@ -38,13 +38,13 @@ enum MeasurementDelays {
 }
 
 
-const LIGHT_MEASUREMENT_DELAY = 3000;
-const TEMPERATURE_MEASUREMENT_DELAY = 3000;
-const HUMIDITY_MEASUREMENT_DELAY = 3000;
-const BAROMETER_MEASUREMENT_DELAY = 3000;
-const VOC_MEASUREMENT_DELAY = 3000;
-const CO2_MEASUREMENT_DELAY = 3000;
-const BATTERY_MEASUREMENT_DELAY = 3000;
+let LIGHT_MEASUREMENT_DELAY : number = 3000;
+let TEMPERATURE_MEASUREMENT_DELAY : number = 3000;
+let HUMIDITY_MEASUREMENT_DELAY : number = 3000;
+let BAROMETER_MEASUREMENT_DELAY : number = 3000;
+let VOC_MEASUREMENT_DELAY : number = 3000;
+let CO2_MEASUREMENT_DELAY : number = 3000;
+let BATTERY_MEASUREMENT_DELAY : number = 3000;
 
 
 const I2C_ADDRESS_TAG_LUX = 0x44;
@@ -1132,26 +1132,43 @@ namespace hardwario {
     }
 
     /**
-    * Sets the delay between measurements on chosen sensor to value in ms.
+    * Sets the delay between measurements on chosen sensor to value in s.
     */
-    //%block="change $sensorType measurement delay to $delay"
+    //%block="change $sensorType measurement delay to $delay(seconds)"
+    //% delay.min=1 delay.max=60
     export function measurementDelay(sensorType: MeasurementDelays, delay: number) {
+        delay = delay * 1000;
+
         switch (sensorType) {
             case MeasurementDelays.Light:
+                LIGHT_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.Barometer:
+                BAROMETER_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.Battery:
+                BATTERY_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.Co2:
+                CO2_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.Humidity:
+                HUMIDITY_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.Temperature:
+                TEMPERATURE_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.Voc:
+                VOC_MEASUREMENT_DELAY = delay;
                 break;
             case MeasurementDelays.All:
+                LIGHT_MEASUREMENT_DELAY = delay;
+                BAROMETER_MEASUREMENT_DELAY = delay;
+                BATTERY_MEASUREMENT_DELAY = delay;
+                CO2_MEASUREMENT_DELAY = delay;
+                HUMIDITY_MEASUREMENT_DELAY = delay;
+                TEMPERATURE_MEASUREMENT_DELAY = delay;
+                VOC_MEASUREMENT_DELAY = delay;
                 break;
         }
     }
@@ -1264,10 +1281,10 @@ namespace hardwario {
         control.onEvent(Events.Movement, -10, body);
     }
 
-
-    /*
-        TODO: SPI config
-    */
+    //TODO: SPI config
+    /**
+     * Configures the Motion Detector and start the infinite loop that will detect any movement due to the given parameters.
+     */
     //%block="motion set sensitivity: $sensitivity|set Blind Time: $blindTime|set Pulse Conunter: $pulseCounter|set Window Time: $windowTime"
     //% sensitivity.min=0 sensitivity.max=255
     //% blindTime.min=0 blindTime.max=15
